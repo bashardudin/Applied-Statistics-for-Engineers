@@ -1,0 +1,147 @@
+---
+title: "Descriptive Statistics"
+output: html_notebook
+---
+
+## R Crash Course
+
+This is a quick paragraph on basics in R. More broad features and advanced uses will be seen later during the course. We're writing text here within an *R notebook* ; markdown is used for formatting text and executable chunks can be added to the file using *Ctrl+Alt+I* keybinding or using toolbar. A code chunk is executed using *Ctrl+Shift+Enter* keybinding or running using mouse-click from within chunk. The whole notebook can be also rendered as an html or pdf file, which is quite convenient to write down reports.
+
+Help on any R function can be found using the `help(...)` function. It's argument is a string corresponding to the name of the function we intend to get help on.
+
+### Installing packages from official repositories
+
+We'll be using the datasets coming with the reference **Introductory Statistics with R**. It can be downloaded from the official *r-cran* repositories. This is quite straightforward in R. 
+
+```{r, Downloading ISwR package}
+install.packages("ISwR")
+```
+
+To import a package which is not built-in into R one uses the commad `library`.
+
+```{r, Calling a library}
+library(ISwR)
+```
+
+### First encounter with prompt and vectors
+
+The R prompt can be used as a calculator, it's an interpreter and every R code chunk is sent to the interpreter at runtime. 
+
+```{r, Variable assignment}
+
+```
+
+Statistics does not make sense unless you have vectorized data structures. Vectors in R are built up using the constructor `c(...)` 
+
+```{r, Vectors}
+
+```
+
+Accessing subvectors of a vector.
+
+```{r, Slicing vectors}
+
+```
+
+Arithmetic operations on vectors are done elementwise. If one of the vectors is shorter than the other, it is recycled. A *warning* is issued by R if the longer vector's length is not a multiple of the second.
+
+```{r, Arithmetic operations on vectors}
+
+```
+
+```{r, Mean, variance and Standard Deviation}
+
+```
+
+### R Basics
+
+R is mainly used as a scripting language. Scripts are composed of expressions interpreted by the R prompt. Every such script has a return value which might be `NULL`. 
+
+#### Basic Data Types
+
+R comes with a standard number of data types. 
+
+```{r, Numericals}
+
+```
+
+```{r, Strings}
+
+```
+
+```{r, Logical}
+
+```
+
+In most statistical studies one faces appearance of missing vallues, unanswered questions, bugged reports etc.
+
+```{r, Missing values}
+
+```
+
+Another statistical feature we're dealing with is the one of existance of variables giving a discrete information which is not of numerical type : color of eyes, moods, subjective evaluations. There is a specific R type for these ones called `factor type`.
+
+```{r, Factors}
+
+```
+
+#### Data Frames
+
+Data frames are R excel sheets. It's created using the constructor `data.frame()`, its entries are vectors of the same size that will be binded column per column. Each such vector corresponds to a feature of the dataset and each line to an individual. 
+
+```{r, dummy data frame}
+
+```
+
+There is a number of features which help checking sanity of a data frame. Among which `head` and `tail`, giving respectively first rows or last rows of a data frame. 
+
+```{r, Head and tail}
+
+```
+
+To check types names of features and number of occurences of a data frame one frequently uses the function `str`
+
+```{r, Looking into types of data frame entries}
+
+```
+
+A data frame feature can be accessed in many different way among which using notation `$`. 
+
+```{r, accessing feature of a data frame}
+
+```
+
+Slicing of a data frame behaves in a similar way as the one of vectors.
+
+```{r, slicing data frames}
+
+```
+
+When dealing with data frames having factors, one might wish to group the data entries with respect to each factors. We'll be looking here into the data frame called *energy* coming with the *ISwR* package. 
+
+```{r, Grouping data by hand}
+
+```
+
+```{r, Using split}
+
+```
+
+To efficiently apply statistical functions to grouped data R makes available the `apply` family. They wrap loop operations. First example is given using the "thuesen" dataframe.
+
+```{r, Using apply operations}
+
+```
+
+## Statistical features
+
+Descriptive statistics is about checking out main statistical features one can figure out in a given dataset. They first two you're used to are *position* and *dispersion* statistiscs, one can also have a look at *correlation* statistics that describe possible linear relationships between features. Notice that correlation statistics are in fact dispersion one. 
+
+The main position statistics are *mean* and *median*. For dispersion one may want to have a look at *standard deviation*, *variance* or *quantiles*. 
+
+We'll be subsequently using the dataset `juul` which contaings medical data about growth rate of children. The `igf1` entry is an insulin-like growht factor and `tanner` is a classification for puberty stages.
+
+```{r, Trying out descriptive statistics}
+str(juul)
+```
+
