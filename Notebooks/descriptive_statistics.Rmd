@@ -27,30 +27,48 @@ library(ISwR)
 
 The R prompt can be used as a calculator, it's an interpreter and every R code chunk is sent to the interpreter at runtime. 
 
-```{r, Variable assignment}
+```{r}
+3 + 5
+```
 
+```{r}
+exp(3)
+log(10)
+```
+
+```{r, Variable assignment}
+x <- FALSE
+x
 ```
 
 Statistics does not make sense unless you have vectorized data structures. Vectors in R are built up using the constructor `c(...)` 
 
 ```{r, Vectors}
-
+v <- c(1, 3, 4, 4, 5, 12, 43, 64, 23, 54, 13, 54, 3)
 ```
 
 Accessing subvectors of a vector.
 
 ```{r, Slicing vectors}
-
+v[1]
+v[1:3]
+v[1:100]
+v[c(1, 2, 5, 6)]
+v[-2]
+v[-c(1, 2, 4)]
 ```
 
 Arithmetic operations on vectors are done elementwise. If one of the vectors is shorter than the other, it is recycled. A *warning* is issued by R if the longer vector's length is not a multiple of the second.
 
 ```{r, Arithmetic operations on vectors}
-
-```
-
-```{r, Mean, variance and Standard Deviation}
-
+vbar <- sum(v)/length(v)
+vbar
+residuals <- v - vbar
+residuals <- residuals^2
+variance  <- sum(residuals)/length(residuals)
+variance
+stdeviation <- sqrt(variance)
+stdeviation
 ```
 
 ### R Basics
@@ -82,7 +100,10 @@ In most statistical studies one faces appearance of missing vallues, unanswered 
 Another statistical feature we're dealing with is the one of existance of variables giving a discrete information which is not of numerical type : color of eyes, moods, subjective evaluations. There is a specific R type for these ones called `factor type`.
 
 ```{r, Factors}
-
+pain <- c(0, 1, 3, 3, 4, 4, 2, 0, 2, 1, 3, 4, 5, 5, 5)
+fpain <- factor(pain)
+levels(fpain) <- c("None", "Mild", "Medium", "Serious", "I'm gonna die", "I can't talk")
+fpain
 ```
 
 #### Data Frames
@@ -90,48 +111,89 @@ Another statistical feature we're dealing with is the one of existance of variab
 Data frames are R excel sheets. It's created using the constructor `data.frame()`, its entries are vectors of the same size that will be binded column per column. Each such vector corresponds to a feature of the dataset and each line to an individual. 
 
 ```{r, dummy data frame}
-
+height <- c(1.82, 1.77, 1.85, 1.25, 1.69, 1.83, 1.62, 1.58, 1.93, 2.01)
+weight <- c(76, 89, 54, 63, 77, 91, 83, 83, 88, 72)
+eye.color <- c("green", "brown", "blue", "black", "green", "brown", "blue", "black", "brown", "blue")
+df <- data.frame(height=height, weight=weight, eye.color=eye.color)
+df
 ```
 
 There is a number of features which help checking sanity of a data frame. Among which `head` and `tail`, giving respectively first rows or last rows of a data frame. 
 
 ```{r, Head and tail}
-
+head(df)
+tail(df)
 ```
 
 To check types names of features and number of occurences of a data frame one frequently uses the function `str`
 
 ```{r, Looking into types of data frame entries}
-
+str(df)
 ```
 
 A data frame feature can be accessed in many different way among which using notation `$`. 
 
 ```{r, accessing feature of a data frame}
+df$weight
+df["weight"]  # dataframe
+df[["weight"]]
+df[c(1, 2)]
+df[-c(1)]
+```
 
+```{r}
+df[1, 2]
+df$weight[1]
+df[["weight"]][1]
 ```
 
 Slicing of a data frame behaves in a similar way as the one of vectors.
 
 ```{r, slicing data frames}
-
+df[weight > 80, ]
 ```
 
 When dealing with data frames having factors, one might wish to group the data entries with respect to each factors. We'll be looking here into the data frame called *energy* coming with the *ISwR* package. 
 
-```{r, Grouping data by hand}
+```{r, Checking out data}
+str(energy)
+head(energy)
+View(energy)
+```
 
+```{r, Grouping data}
+energy$stature=="lean"
+energy$expend[energy$stature=="lean"]
 ```
 
 ```{r, Using split}
-
+split(energy$expend, energy$stature)
 ```
 
-To efficiently apply statistical functions to grouped data R makes available the `apply` family. They wrap loop operations. First example is given using the "thuesen" dataframe.
+
+
+To efficiently apply statistical functions to grouped data R makes available the `apply` family. They wrap loop operations. We'll be using the dataset "thuesen" for this one.
+
+```{r, checking out data}
+str(thuesen)
+```
 
 ```{r, Using apply operations}
+lapply(thuesen, mean, na.rm=T)
+args(mean.default)
 
+sapply(thuesen, mean, na.rm=T)
 ```
+
+One other thing you frequently find yourself doing when you're interested in statistics is SORTING.
+
+```{r, sorting}
+df$height
+permutation <- order(df$height)
+df$height[permutation]
+df[permutation, ]
+```
+
 
 ## Statistical features
 
@@ -141,7 +203,7 @@ The main position statistics are *mean* and *median*. For dispersion one may wan
 
 We'll be subsequently using the dataset `juul` which contaings medical data about growth rate of children. The `igf1` entry is an insulin-like growht factor and `tanner` is a classification for puberty stages.
 
-```{r, Trying out descriptive statistics}
+```{r, Trying out descriptive statistics on juul}
 str(juul)
 ```
 
