@@ -1,0 +1,232 @@
+---
+title: "Statistical Inference"
+output: html_notebook
+---
+
+This notebook is here to sum up key elements about statistical inference. Mainly
+to add up to the course, giving elements on R's built-in probability 
+distributions and how to use them for inference. 
+
+Recall that inference is a way to specify an interval in which a given 
+statistic of studied population has high to chance to be, only knowing this 
+statistic on a smaller random sample of population. We've studied three 
+statistics for which we can talk about inference:
+
+* Mean of a sequence of random gaussian variables having same law and mutually
+  independant.
+
+* Variance of a sequence of random gaussian variables having same lay and 
+  mutually independant.
+
+* Proportion of a sum of Bernoulli laws, having same law and mutually 
+  independant.  
+
+The hypothesis on being of same law and mutually independant practically mean 
+that each observation is insight on the same modeled phenomena, mutual 
+inedpendancy means that each an observation/experiment does not affect the 
+others. This is the intuitive thinking to keep of these hypothesis.
+
+We'll be first going through a section on built-in probability laws in R.
+
+## Main Probability Laws in R
+
+Four fundamental items are available in R for a statistical distribution
+  
+* Density or point probability (depending on whether you have a continuous or 
+  discrete probability)
+* Cumulated probability, distribution function
+* Quantiles
+* Pseudo-random numbers.
+  
+A given probability law, for example the normal (gaussian) one, will thus have 
+functions `dnorm`, `pnorm`,  `qnorm` and `rnorm`. The `d`, `p`, `q` and `r` are
+standard prefixes.
+
+### Binomial Case.
+  
+```{r, probability distribution for binomial}
+x <- 0:50
+plot(x, dbinom(x, size=50, prob=.33), type="h")
+```
+
+```{r, probability pnorm for binomial}
+x <- 0:50
+plot(x, pbinom(x, size=50, prob=.33), type="h")
+```
+
+```{r, quantiles for binomial law}
+qbinom(0.975, size=50, prob=.33)
+```
+
+
+### Normal distribution
+
+```{r, density of normal law}
+x <- seq(-4, 4, 0.1)
+plot(x, dnorm(x), type="l")
+```
+
+
+```{r, distribution probability of normal law}
+x <- seq(-4, 4, 0.1)
+plot(x, pnorm(x), type="l")
+```
+
+```{r, quantiles of normal distribution}
+qnorm(0.975)
+```
+
+### Student Law
+
+It looks like the gaussian law for big freedom parameters, it does however 
+converge less quickly to 0 at infinities.
+
+In the upcoming plot the gaussian law is in red.
+
+```{r, density of student law}
+x <- seq(-4, 4, 0.1)
+plot(x, dt(x, 5), type="l")
+lines(x, dnorm(x), col="red")
+```
+
+```{r, distribution function of student law}
+x <- seq(-4, 4, 0.1)
+plot(x, pt(x, 5), type="l")
+lines(x, pnorm(x), col="red")
+```
+
+
+```{r, quantiles of student law}
+qt(0.975, df=9)
+qnorm(0.975)
+```
+
+### Chisquare distribution
+
+The chisquare law differs greatly from the gaussian one as you can see for 
+yourselves.
+
+```{r, chisquare density distribution}
+x <- seq(-4, 20, 0.1)
+plot(x, dnorm(x), col="red", type="l")
+lines(x, dchisq(x, df=7))
+```
+
+```{r, distribution function of chisquare law}
+x <- seq(-4, 20, 0.1)
+plot(x, pnorm(x), col="red", type="l")
+lines(x, pchisq(x, df=7))
+```
+
+
+```{r, quantiles of chisquare law}
+qchisq(0.975, df=7)
+qnorm(0.975)
+```
+
+## Statistical Inference
+
+We'll be going through pratical steps to understand how one builds up confidence
+intervals out of samples. 
+
+### Case of mean
+
+Let $\{X_i\}_i$ be a sequence of mutually independant random variables having 
+same gaussian law ; average being $\mu$ and standard deviation $\sigma$. 
+Let $\overline{X}_n$ be the randome variable given by empirical expected value 
+of first $n$ variables and $s$ its empirical standard deviation. We have that 
+$$\frac{\overline{X}_n- \mu}{s / \sqrt{n}} \simeq N(0, 1)$$
+Let $\alpha$ be in $[0, 1]$, and $t_{1-(\alpha/2)}$ the quantile of the normal 
+law at $1-(\alpha/2)$. A symmetric interval centered at $\overline{X}_n$ having
+probability $1-\alpha$ of containing $\mu$ is given by
+$$\left[\overline{X}_n - \frac{s}{\sqrt{n}}t_{1-(\alpha/2)}, \overline{X}_n + \frac{s}{\sqrt{n}}t_{1-(\alpha/2)}\right].$$
+
+Notice that this strategy is still a working strategy for big enough $n$ 
+(in practice $n > 30$) because of the large numbers law.
+
+Given a vector corresponding to a numerical feature, computing previous 
+confidence intervals at risk level $5%$ is rather simple.
+
+```{r, confidence interval dummy test}
+n <- 10
+mu <-10
+sigma <- 4
+v <- rnorm(n, mean=mu, sd=sigma)
+c(mean(v)-(sd(v)/sqrt(n))*qnorm(0.975), mean(v) + (sd(v)/sqrt(n))*qnorm(0.975))
+```
+
+We build up things in such a way that sample was extracted from a normal law
+having mean `mu` and standard deviation `sigma`. Notice that if same mean and
+standard deviation where assumed to result from a bigger sample 
+
+```{r, if we were coming from bigger sample}
+c(mean(v)-(sd(v)/sqrt(100*n))*qnorm(0.975), mean(v) + (sd(v)/sqrt(100*n))*qnorm(0.975))
+```
+
+we'd be narrowing the interval we expect to have mean `mu`.
+
+### Case of variance
+
+
+### Case of proportion
+
+
+
+## Statistical Inference in Practice
+
+Let's look back at the `juul` dataset.
+
+```{r, Downloading ISwR package}
+install.packages("ISwR")
+```
+
+```{r, loading package}
+library("ISwR")
+```
+
+```{r, cleaning dataset}
+juul_local <- juul
+for (name in c("sex", "menarche", "tanner")){
+  juul[[name]] <- factor(juul_local[[name]], ordered=(name == "tanner"))
+}
+levels(juul_local$sex) <- c("Male", "Female")
+levels(juul_local$menarche) <- c("No","Yes")
+summary(juul_local)
+```
+
+One can already say a couple of things looking into theses statistics:
+* There are a little more females than males in the dataset;
+* Half the sample has age in between 9 and 15. Which suggest rather a young
+  population;
+* Nearly 25% of the sample didn't get any result for `igf1`, 20% for `tanner`;
+* Most `tanner` known results are centered around boundaries.
+
+```{r, ignoring individuals not having any ifg1 measurement}
+juul_local <- juul_local[!is.na(juul_local$igf1), ]
+```
+
+```{r, looking into mean per sex}
+juul_local <- juul_local[!is.na(juul_local$sex), ]
+igf1_sex <- split(juul_local$igf1, juul_local$sex)
+
+statistics_sex <- data.frame(Male=rep(0, 6), Female=rep(0, 6))
+rownames(statistics_sex) <- c("min", "Q1", "median", "mean", "Q3", "max")
+for (i in names(igf1_sex)){
+  group <- igf1_sex[[i]]
+  statistics_sex[[i]] <- c(min(group), quantile(group, probs=c(0.25)), median(group), 
+                           mean(group), quantile(group, probs=c(0.75)), max(group))
+}  
+
+statistics_sex
+```
+
+```{r, splitting into male and female subsets}
+juul_male <- juul_local[juul_local$sex == "Male", ]
+juul_male$menarche <- NULL
+
+juul_female <- juul_local[juul_local$sex == "Female", ]
+```
+
+
+
+

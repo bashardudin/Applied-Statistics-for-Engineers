@@ -5,17 +5,24 @@ output: html_notebook
 
 ## R Crash Course
 
-This is a quick paragraph on basics in R. More broad features and advanced uses will be seen later during the course. We're writing text here within an *R notebook* ; markdown is used for formatting text and executable chunks can be added to the file using *Ctrl+Alt+I* keybinding or using toolbar. A code chunk is executed using *Ctrl+Shift+Enter* keybinding or running using mouse-click from within chunk. The whole notebook can be also rendered as an html or pdf file, which is quite convenient to write down reports.
+This is a quick paragraph on basics in R. More broad features and advanced uses 
+will be seen later during the course. We're writing text here within an 
+*R notebook* ; markdown is used for formatting text and executable chunks can be
+added to the file using *Ctrl+Alt+I* keybinding or using toolbar. A code chunk 
+is executed using *Ctrl+Shift+Enter* keybinding or running using mouse-click 
+from within chunk. The whole notebook can be also rendered as an html or pdf 
+file, which is quite convenient to write down reports.
 
-Help on any R function can be found using the `help(...)` function. It's argument is a string corresponding to the name of the function we intend to get help on.
+Help on any R function can be found using the `help(...)` function. It's 
+argument is a string corresponding to the name of the function we intend to 
+get help on.
 
 ### Installing packages from official repositories
 
-We'll be using the datasets coming with the reference **Introductory Statistics with R**. It can be downloaded from the official *r-cran* repositories. This is quite straightforward in R. 
+We'll be using the datasets coming with the reference 
+**Introductory Statistics with R**. It can be downloaded from the official 
+*r-cran* repositories. This is quite straightforward in R. 
 
-```{r, Downloading ISwR package}
-install.packages("ISwR")
-```
 
 To import a package which is not built-in into R one uses the commad `library`.
 
@@ -25,7 +32,8 @@ library(ISwR)
 
 ### First encounter with prompt and vectors
 
-The R prompt can be used as a calculator, it's an interpreter and every R code chunk is sent to the interpreter at runtime. 
+The R prompt can be used as a calculator, it's an interpreter and every R code 
+chunk is sent to the interpreter at runtime. 
 
 ```{r}
 3 + 5
@@ -41,10 +49,12 @@ x <- FALSE
 x
 ```
 
-Statistics does not make sense unless you have vectorized data structures. Vectors in R are built up using the constructor `c(...)` 
+Statistics does not make sense unless you have vectorized data structures. 
+Vectors in R are built up using the constructor `c(...)` 
 
 ```{r, Vectors}
 v <- c(1, 3, 4, 4, 5, 12, 43, 64, 23, 54, 13, 54, 3)
+length(v)
 ```
 
 Accessing subvectors of a vector.
@@ -58,7 +68,9 @@ v[-2]
 v[-c(1, 2, 4)]
 ```
 
-Arithmetic operations on vectors are done elementwise. If one of the vectors is shorter than the other, it is recycled. A *warning* is issued by R if the longer vector's length is not a multiple of the second.
+Arithmetic operations on vectors are done elementwise. If one of the vectors is 
+shorter than the other, it is recycled. A *warning* is issued by R if the longer
+vector's length is not a multiple of the second.
 
 ```{r, Arithmetic operations on vectors}
 vbar <- sum(v)/length(v)
@@ -69,35 +81,55 @@ variance  <- sum(residuals)/length(residuals)
 variance
 stdeviation <- sqrt(variance)
 stdeviation
+qnorm(0.975)
 ```
+
+```{r, confidence interval of level 0.95 (at risk 0.05)}
+vbar - (stdeviation/sqrt(100))*qnorm(0.975)
+vbar + (stdeviation/sqrt(100))*qnorm(0.975)
+```
+
+
 
 ### R Basics
 
-R is mainly used as a scripting language. Scripts are composed of expressions interpreted by the R prompt. Every such script has a return value which might be `NULL`. 
+R is mainly used as a scripting language. Scripts are composed of expressions 
+interpreted by the R prompt. Every such script has a return value which might 
+be `NULL`. 
 
 #### Basic Data Types
 
 R comes with a standard number of data types. 
 
 ```{r, Numericals}
-
+1.2
+2
 ```
 
 ```{r, Strings}
-
+"Welcome to Paris"
+'Welcome to Paris'
 ```
 
 ```{r, Logical}
-
+c(F, F, T)
 ```
 
-In most statistical studies one faces appearance of missing vallues, unanswered questions, bugged reports etc.
+In most statistical studies one faces appearance of missing vallues, unanswered 
+questions, bugged reports etc.
 
 ```{r, Missing values}
-
+NA
+NA + 2
+NA + NA
+NA*NA
+NA*2
 ```
 
-Another statistical feature we're dealing with is the one of existance of variables giving a discrete information which is not of numerical type : color of eyes, moods, subjective evaluations. There is a specific R type for these ones called `factor type`.
+Another statistical feature we're dealing with is the one of existance of 
+variables giving a discrete information which is not of numerical type : color 
+of eyes, moods, subjective evaluations. There is a specific R type for these 
+ones called `factor type`.
 
 ```{r, Factors}
 pain <- c(0, 1, 3, 3, 4, 4, 2, 0, 2, 1, 3, 4, 5, 5, 5)
@@ -108,7 +140,10 @@ fpain
 
 #### Data Frames
 
-Data frames are R excel sheets. It's created using the constructor `data.frame()`, its entries are vectors of the same size that will be binded column per column. Each such vector corresponds to a feature of the dataset and each line to an individual. 
+Data frames are R excel sheets. It's created using the constructor 
+`data.frame()`, its entries are vectors of the same size that will be binded 
+column per column. Each such vector corresponds to a feature of the dataset and 
+each line to an individual. 
 
 ```{r, dummy data frame}
 height <- c(1.82, 1.77, 1.85, 1.25, 1.69, 1.83, 1.62, 1.58, 1.93, 2.01)
@@ -118,20 +153,24 @@ df <- data.frame(height=height, weight=weight, eye.color=eye.color)
 df
 ```
 
-There is a number of features which help checking sanity of a data frame. Among which `head` and `tail`, giving respectively first rows or last rows of a data frame. 
+There is a number of features which help checking sanity of a data frame. Among 
+which `head` and `tail`, giving respectively first rows or last rows of a data 
+frame. 
 
 ```{r, Head and tail}
 head(df)
 tail(df)
 ```
 
-To check types names of features and number of occurences of a data frame one frequently uses the function `str`
+To check types names of features and number of occurences of a data frame one 
+frequently uses the function `str`
 
 ```{r, Looking into types of data frame entries}
 str(df)
 ```
 
-A data frame feature can be accessed in many different way among which using notation `$`. 
+A data frame feature can be accessed in many different way among which using 
+notation `$`. 
 
 ```{r, accessing feature of a data frame}
 df$weight
@@ -153,7 +192,9 @@ Slicing of a data frame behaves in a similar way as the one of vectors.
 df[weight > 80, ]
 ```
 
-When dealing with data frames having factors, one might wish to group the data entries with respect to each factors. We'll be looking here into the data frame called *energy* coming with the *ISwR* package. 
+When dealing with data frames having factors, one might wish to group the data 
+entries with respect to each factors. We'll be looking here into the data frame 
+called *energy* coming with the *ISwR* package. 
 
 ```{r, Checking out data}
 str(energy)
@@ -172,7 +213,9 @@ split(energy$expend, energy$stature)
 
 
 
-To efficiently apply statistical functions to grouped data R makes available the `apply` family. They wrap loop operations. We'll be using the dataset "thuesen" for this one.
+To efficiently apply statistical functions to grouped data R makes available the
+`apply` family. They wrap loop operations. We'll be using the dataset "thuesen" 
+for this one.
 
 ```{r, checking out data}
 str(thuesen)
@@ -185,7 +228,8 @@ args(mean.default)
 sapply(thuesen, mean, na.rm=T)
 ```
 
-One other thing you frequently find yourself doing when you're interested in statistics is SORTING.
+One other thing you frequently find yourself doing when you're interested in 
+statistics is SORTING.
 
 ```{r, sorting}
 df$height
@@ -197,13 +241,176 @@ df[permutation, ]
 
 ## Statistical features
 
-Descriptive statistics is about checking out main statistical features one can figure out in a given dataset. They first two you're used to are *position* and *dispersion* statistiscs, one can also have a look at *correlation* statistics that describe possible linear relationships between features. Notice that correlation statistics are in fact dispersion one. 
+Descriptive statistics is about checking out main statistical features one can 
+figure out in a given dataset. They first two you're used to are *position* and 
+*dispersion* statistiscs, one can also have a look at *correlation* statistics 
+that describe possible linear relationships between features. Notice that 
+correlation statistics are in fact dispersion one. 
 
-The main position statistics are *mean* and *median*. For dispersion one may want to have a look at *standard deviation*, *variance* or *quantiles*. 
+The main position statistics are *mean* and *median*. For dispersion one may 
+want to have a look at *standard deviation*, *variance* or *quantiles*. 
 
-We'll be subsequently using the dataset `juul` which contaings medical data about growth rate of children. The `igf1` entry is an insulin-like growht factor and `tanner` is a classification for puberty stages.
+We'll be subsequently using the dataset `juul` which contains medical data 
+about growth rate of children. The `igf1` entry is an insulin-like growht factor
+and `tanner` is a classification for puberty stages.
 
 ```{r, Trying out descriptive statistics on juul}
-str(juul)
+juul_local <- juul
+str(juul_local)
 ```
+
+```{r}
+for (name in c("sex", "menarche", "tanner")){
+  juul[[name]] <- factor(juul_local[[name]], ordered=(name == "tanner"))
+}
+levels(juul_local$sex) <- c("Male", "Female")
+levels(juul_local$menarche) <- c("No","Yes")
+str(juul_local)
+```
+
+The function `summary` is quite useful to give quick statistcs about either 
+categorical or nunerical variables in a dataset. Depending on the type of the 
+variable you're dealing with it will return different outputs. This is part of 
+why one needs to be clear on the type of variables they're dealing with; the R 
+framework is sensitive to that. 
+
+```{r}
+summary(juul_local)
+```
+
+One can already say a couple of things looking into theses statistics:
+* There are a little more females than males in the dataset;
+* Half the sample has age in between 9 and 15. Which suggest rather a young
+  population;
+* Nearly 25% of the sample didn't get any result for `igf1`, 20% for `tanner`;
+* Most `tanner` known results are centered around boundaries.
+
+One could do way more to study distribution of each individual feature, for 
+instance you could look for better description of age distribution, or who are
+those without any `tanner` result. Our main aim here is to try understanding how
+`igf1` feature is affected by other features, if any. This is one of the 
+questions you can find yourself dealing with in statistics :
+  
+* Given a feature you want to understand `Y` and a dataset containing it what 
+  is the influence of other features on `Y`?
+  
+Another different question that you might wish to address would be the following:
+
+* What are the relationships if any between features of a dataset?  
+
+This is the starting point of data mining.
+
+Keeping track of what we'd be looking for here (understanding `igf1` variance 
+in term of other features) we'd rather eliminate rows of the dataframe 
+corresponding to missing `igf1` values. 
+
+```{r, eliminating missing vales}
+juul_local <- juul_local[!is.na(juul_local$igf1), ]
+summary(juul_local)
+```
+
+On can see that we've substantially reduced the size of our sample:
+
+```{r, sample reduction}
+1 - nrow(juul_local)/nrow(juul)
+```
+
+One can guess a little more looking into the statistics at hand, that's left 
+to you for further fun guessing.
+
+Understanding what factors do play role in the `igf1` feature is about linking
+it to other features. It would a good point for a starter to look into standard 
+statistics per modality of each categorical variable. A good starting point 
+can be `sex` feature. Since `menarche` is related to this feature, it can only
+be useful in such a subset, adding to that the rare missing values we have for
+`sex`.
+
+A way to get what we're looking for is to use the `split` function we've already
+seen
+
+```{r, looking into mean per sex}
+juul_local <- juul_local[!is.na(juul_local$sex), ]
+igf1_sex <- split(juul_local$igf1, juul_local$sex)
+
+statistics_sex <- data.frame(Male=rep(0, 6), Female=rep(0, 6))
+rownames(statistics_sex) <- c("min", "Q1", "median", "mean", "Q3", "max")
+for (i in names(igf1_sex)){
+  group <- igf1_sex[[i]]
+  statistics_sex[[i]] <- c(min(group), quantile(group, probs=c(0.25)), median(group), 
+                           mean(group), quantile(group, probs=c(0.75)), max(group))
+}  
+
+statistics_sex
+```
+
+Looking into these results, one might want to say that females `igf1` feature is
+higher than males one in average. This is not necessarily the case, and this
+impression might be considered as a sampling issue ; you randomly select your 
+sample, selection process might give you differences without this being 
+significant in the original population you took your sample from. We're 
+precisely in the case when one would like to test a statistical hypothesis:
+**Are means of both samples significantly different?**. This is something we'll
+be seeing later.
+
+For the time being let us assume, and that does sound reasonable from a 
+practical perspective that `Male` and `Female` subdatasets, should be studied each
+on its own.
+
+```{r, splitting into male and female subsets}
+juul_male <- juul_local[juul_local$sex == "Male", ]
+juul_female <- juul_local[juul_local$sex == "Female", ]
+```
+
+```{r, checking for male dataset}
+str(juul_male)
+```
+
+Let's check in case there are any bad entries in meneach field.
+
+```{r, missing values in menarche}
+sum(!is.na(juul_male$menarche))
+```
+
+We can drop the menarche feature in male dataset.
+
+```{r}
+juul_male$menarche <- NULL
+str(juul_male)
+```
+
+
+```{r, checking for female dataset}
+str(juul_female)
+```
+
+```{r, summary of female dataset}
+summary(juul_female)
+```
+
+It would be natural looking into the the female dataset to wonder whether 
+`menarche` has influence on `igf1`. One would however need to take into account
+if this is more relevant than looking into the `tanner` feature.
+
+We do now have two datasets that we're ready to study into deeper detail, and of
+which we expect to dig out useful information. For instance
+
+* Can we find out an interval in which the average `igf1` feature in sick 
+  patients should be? This is about **inference**.
+
+* How do we test the previous hypothesis relative to significant difference of 
+  mean of male and female populations? This is about **hypothesis testing**.
+
+* Is there a way to study relation between `age` and `igf1`, `tanner` and 
+  `igf1`? This is about studying **correlations**.
+  
+Study of the dataset `juul` is done in a notebook on its own you can find within
+the repo.
+
+
+
+
+
+
+
+
 
