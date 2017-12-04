@@ -1,0 +1,31 @@
+---
+title: "Standard R plotting"
+output: html_notebook
+---
+
+We'll start by loading data we want to analyse.
+
+```{r, loading tree data.}
+ufc.plots <- read.csv("/home/bashar/Dropbox/Work/Epita/Enseignement/Maths/Applied-Statistics-for-Engineers/Notebooks/data/ufc.csv")
+str(ufc.plots)
+```
+
+`height.m` is the feature for tree height in meters, `dbh.cm` is the bole 
+diameter in cm measured at 1.37 meters from ground.
+
+* Go through the plot help in order to make a scatterplot of bole diameter 
+  against height. Play with the different parameters you find there.
+  
+* Look into the `par` command control graphical device outputs. What are the 
+  `mfrow`, `mar`, `oma`, `las`, `pty`, `new`, `cex` and `bty` parameters about?
+  
+* What are `points` and `lines` functions within a plot?
+
+* How do you deal with `axis`?
+
+* Draw a scatterplot per species in same 4 by 4 plot using `par` and `plot`
+  functions.
+
+* load the `lattice` library. What is its use? Use the `densityplot`, `bwplot`,
+  `histogram` and `xyplot` functions to plot distribution of diameter of bole 
+  per species and diameter against height scatterplots per species.

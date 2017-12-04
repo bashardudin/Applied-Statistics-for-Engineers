@@ -1,0 +1,107 @@
+---
+title: "Juul Dataset Analysis"
+output: html_notebook
+---
+
+## Loading Dataset
+
+```{r, Downloading ISwR package}
+install.packages("ISwR")
+```
+
+```{r, loading package}
+library("ISwR")
+```
+
+## Digging in
+
+We'll be subsequently using the dataset `juul` which contains medical data 
+about growth rate of children. The `igf1` entry is an insulin-like growht factor
+and `tanner` is a classification for puberty stages.
+
+```{r, Trying out descriptive statistics on juul}
+juul_local <- juul
+str(juul_local)
+```
+
+```{r}
+for (name in c("sex", "menarche", "tanner")){
+  juul[[name]] <- factor(juul_local[[name]], ordered=(name == "tanner"))
+}
+levels(juul_local$sex) <- c("Male", "Female")
+levels(juul_local$menarche) <- c("No","Yes")
+str(juul_local)
+```
+
+```{r}
+summary(juul_local)
+```
+
+* There are a little more females than males in the dataset;
+* Half the sample has age in between 9 and 15. Which suggest rather a young
+  population;
+* Nearly 25% of the sample didn't get any result for `igf1`, 20% for `tanner`;
+* Most `tanner` known results are centered around boundaries.
+
+We aim at undersanding`igf1` variance in term of other features, we'd rather 
+eliminate rows of the dataframe corresponding to missing `igf1` values. 
+
+```{r, eliminating missing vales}
+juul_local <- juul_local[!is.na(juul_local$igf1), ]
+summary(juul_local)
+```
+
+Understanding what factors do play role in the `igf1` feature is about linking
+it to other features. It would a good point for a starter to look into standard 
+statistics per modality of each categorical variable. A good starting point 
+can be `sex` feature. Since `menarche` is related to this feature, it can only
+be useful in such a subset, adding to that the rare missing values we have for
+`sex`.
+
+A way to get what we're looking for is to use the `split` function we've already
+seen
+
+```{r, looking into mean per sex}
+juul_local <- juul_local[!is.na(juul_local$sex), ]
+igf1_sex <- split(juul_local$igf1, juul_local$sex)
+
+statistics_sex <- data.frame(Male=rep(0, 6), Female=rep(0, 6))
+rownames(statistics_sex) <- c("min", "Q1", "median", "mean", "Q3", "max")
+for (i in names(igf1_sex)){
+  group <- igf1_sex[[i]]
+  statistics_sex[[i]] <- c(min(group), quantile(group, probs=c(0.25)), median(group), 
+                           mean(group), quantile(group, probs=c(0.75)), max(group))
+}  
+
+statistics_sex
+```
+
+Looking into these results, one might want to say that females `igf1` feature is
+higher than males one in average. This is not necessarily the case, and this
+impression might be considered as a sampling issue ; you randomly select your 
+sample, selection process might give you differences without this being 
+significant in the original population you took your sample from. We're 
+precisely in the case when one would like to test a statistical hypothesis:
+**Are means of both samples significantly different?**. 
+
+```{r, splitting into male and female subsets}
+juul_male <- juul_local[juul_local$sex == "Male", ]
+juul_female <- juul_local[juul_local$sex == "Female", ]
+```
+
+```{r, checking coherence for male dataset}
+juul_male$menarche <- NULL
+str(juul_male)
+```
+
+```{r, checking for female dataset}
+str(juul_female)
+```
+
+```{r, summary of female dataset}
+summary(juul_female)
+```
+
+It would be natural looking into the the female dataset to wonder whether 
+`menarche` has influence on `igf1`. One would however need to take into account
+if this is more relevant than looking into the `tanner` feature.
