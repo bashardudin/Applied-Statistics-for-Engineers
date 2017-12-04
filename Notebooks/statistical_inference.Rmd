@@ -133,7 +133,7 @@ intervals out of samples.
 
 Let $\{X_i\}_i$ be a sequence of mutually independant random variables having 
 same gaussian law ; average being $\mu$ and standard deviation $\sigma$. 
-Let $\overline{X}_n$ be the randome variable given by empirical expected value 
+Let $\overline{X}_n$ be the random variable given by empirical expected value 
 of first $n$ variables and $s$ its empirical standard deviation. We have that 
 $$\frac{\overline{X}_n- \mu}{s / \sqrt{n}} \simeq N(0, 1)$$
 Let $\alpha$ be in $[0, 1]$, and $t_{1-(\alpha/2)}$ the quantile of the normal 
@@ -167,9 +167,47 @@ we'd be narrowing the interval we expect to have mean `mu`.
 
 ### Case of variance
 
+Let $\{X_i\}_i$ be a sequence of mutually independant random variables having 
+**same gaussian law** ; average being $\mu$ and standard deviation $\sigma$. 
+Let $\overline{X}_n$ be the random variable given by empirical expected value 
+of first $n$ variables and $s$ its empirical standard deviation. In that case
+we have that 
+$$\frac{ns^2}{\sigma^2} \simeq \chi(n-1)$$
+i.e. left hand side follows a `chisquare` law havign $n-1$ degrees of freedom.
+
+Given a risk level $\alpha \in [0, 1]$ a confidence interval at level $1-\alpha$
+is given by
+$$\left[\frac{ns^2}{\chi_{1-(\alpha/2)}}, \frac{ns^2}{\chi_{\alpha/2}}\right].$$
+
+**In contrast with the case of the mean, this is not extendable to the case of** 
+**a sequence of random variables that are not normal** 
+
+```{r, confidence interval at risk 5% of variance}
+c(n*var(v)/qchisq(df=n-1, 0.975), n*var(v)/qchisq(df=n-1, 0.05))
+```
 
 ### Case of proportion
 
+Let $\{X_i\}_i$ be a sequence of mutually independant random variables having 
+**same Bernoulli law** of parameter $p$. Let $\Sigma_n$ be the random 
+variable given by the sume of first $n$ Bernoulli variables. Intuitively the 
+parameter $p$ is the mean of sums of successful Bernoulli experiments, i.e. 
+$(1/n)\Sigma_n$. This is phrased using the large numbers law as
+$$\frac{\Sigma_n}{n} \simeq N\big(p, p(1-p)\big).$$
+For $n > 100$ and $\Sigma_n(1-(\Sigma_n/n))$, a confidance interval at risk 
+$\alpha$ is given by
+$$\left[\frac{\Sigma_n}{n} - t_{1-(\alpha/2)}\frac{1}{\sqrt{n}}\sqrt{(\Sigma_n/n)\Big(1 - (\Sigma_n/n)\Big)}, \frac{\Sigma_n}{n} + t_{1-(\alpha/2)}\frac{1}{\sqrt{n}}\sqrt{(\Sigma_n/n)\Big(1 - (\Sigma_n/n)\Big)}\right].$$
+
+The typical situation where this strategy applies is when you're looking to 
+estimate proportion of **Yes/No** voters. 
+
+```{r, estimating confidence interval at 5% risk for proportion}
+m <- 200
+p <- .33
+w <- rbinom(m, 1, p)
+print(sum(w)*(1-(sum(w)/m)))
+c(sum(w)/m - qnorm(0.975)*(1/sqrt(m))*sqrt((sum(w)/m)*(1-(sum(w)/m))), sum(w)/m + qnorm(0.975)*(1/sqrt(m))*sqrt((sum(w)/m)*(1-(sum(w)/m))))
+```
 
 
 ## Statistical Inference in Practice
