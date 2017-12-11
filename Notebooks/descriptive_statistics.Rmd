@@ -1,6 +1,8 @@
 ---
 title: "Descriptive Statistics"
-output: html_notebook
+output:
+  html_document: default
+  html_notebook: default
 ---
 
 ## R Crash Course
@@ -357,6 +359,7 @@ sd_female <- sd(igf1_sex$Female)
 n <- length(igf1_sex$Female)
 c(mean_female - sd_female/(sqrt(n-1))*qt(df=n-1, 0.975),
   mean_female + sd_female/(sqrt(n-1))*qt(df=n-1, 0.975))
+mean_female
 ```
 
 Looking into these results, one might want to say that females `igf1` feature is

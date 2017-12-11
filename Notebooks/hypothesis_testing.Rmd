@@ -86,6 +86,8 @@ dummy_sd <- sd(dummy)
 # Null hypothesis is mean equality to 7
 t_dummy <- sqrt(n)*(dummy_bar - 7)/dummy_sd
 print(t_dummy)
+print(qnorm(0.025))
+print(qnorm(0.975))
 qnorm(0.025) < t_dummy && t_dummy < qnorm(0.975) 
 ```
 
@@ -130,8 +132,61 @@ R output is to be understood as in the previous case.
 
 ## (Linear) Correlation
 
+Trying to generate random data to use for correlation tests.
 
+```{r, uncorrelated case}
+x = rnorm(10000)
+y = rnorm(10000)
+plot(x, y)
+```
 
+```{r}
+cor(x, y)
+```
 
+```{r, correlated vectors}
+u = 3*rnorm(1000, mean=1, sd=5) + 2
+v = 2*u + rnorm(1000, sd=3)
+plot(u, v)
+```
+
+```{r}
+cor(u, v)
+```
+
+```{r, correlated vectors}
+u = 3*rnorm(1000, mean=1, sd=5) + 2
+v = -2*u + rnorm(1000, sd=3)
+plot(u, v)
+```
+
+```{r}
+cor(u, v)
+cor.test(u, v)
+```
+
+```{r, correlated vectors}
+u = 3*rnorm(1000, sd=3)
+v = u*u + rnorm(1000, sd=8)
+plot(u, v)
+```
+
+```{r}
+cor(u*u, v)
+```
+
+```{r}
+v = rnorm(1000, sd=0.3)
+u = rep(0, 1000) + rnorm(1000, sd=0.01)
+plot(v, u)
+```
+
+```{r}
+cor(v, u)
+```
+
+```{r}
+cor.test(x, y)
+```
 
 
