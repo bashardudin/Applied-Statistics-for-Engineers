@@ -1,0 +1,137 @@
+---
+title: "Hypothesis Testing"
+output: html_notebook
+---
+
+## What Is It About?
+
+We've already seen a case where testing whether a statement we made was 
+plausible or not : while studiying the `juul` dataset we noticed there was a 
+difference between the means of `males` and `females`. By looking at the 
+confidence interval at 95% of each empirical means we gave an argument 
+suggesting there was a significant difference between means of original 
+populations and the empirical results were not different because of sampling. 
+
+Hypothesis tests in statistics mainly take the following form : Studying a 
+random phenomenon in statistics is generally about studying a sample
+singled out from original population. Empirical statistics of sample give 
+insight into statistics of whole population when studied statistics is known to 
+follow an existing stastical model. This model invovles a parameter which is the 
+target of our study. It can take a range of possible values, a subset of which
+corresponds to the existant of a specific phenomenon we're investigating. To 
+properly formulate hypothesis testing we split the range of possibilities into 
+two subsets corresponding either to existance of studied phenomenon or not. 
+
+* The null hypothesis (H_0) reflects to the case when there is no phenomenon
+* The alternative hypothesis (H_1) reflects when phenomenon is.
+
+**Here is a standard example.**
+
+You're looking into the prices of personal computers since the eighties, you 
+might want to check if average price in comparison to today has changed or not
+(you'll need to take inflation into account to make this meaningful). If `m` is 
+the empirical expected price of personal computers in the eighties you might 
+want to look at the following testing frame:
+
+    * H_0 : today's expected price is `m`
+    * H_1 : today's expected price is not `m` anymore.
+
+You could also choose to have the below perspective:
+
+    * H_0 : there is no difference between expected prices in eighties and 
+      ninties
+    * H_1 : difference is significant.
+    
+Other testing frames could be about checking for an increase, then for the fact
+inflation is not enough to explain increase if any.
+
+As we'll be seeing later, putting down your hypothesis is an essential point in
+order to understand what we're looking for, how we're going to check it and 
+whether statistical method is robust enough to ensure meaningfulness.
+
+## Student one-sample t-test
+
+This is a standard test, testing whether the mean of a population studied 
+through a sequence of mutually indepedent random variables having same normal
+law of mean $\mu$ and standard deviation $\sigma$ differs from a given value 
+$\mu_0$. Write $\overine{X}_n$ for the sequence means up to rank $n$, $S_n$ for
+the one of standard deviation.
+
+* H_0 : mean of population is $\mu_0$
+* H_1 : it is not the case.
+
+We've already seen that 
+$$ t = \frac{\overline{X}_n - \mu_0}{S_n/\sqrt{n}}$$
+
+should follow a student law having $n-1$ degrees of freedom. In that case this 
+random variable has to take values centered and not too far from $0$. Taking 
+quantiles $t_{0.025}$ and $t_{0.975}$ for student law, it has $95%$ probability 
+of being within $[t_{0.025}, t_{0.975}]$. If it appears not to be so, we are 
+inclined to reject the H_0. This is thus done under $t \notin [t_{0.025}, t_{0.975}]$.
+
+To add for this significancy test, statistical tests compute what is called the 
+$p$-value. This is the probability of having an extremal value as the one 
+previously obtained through the test for $t$. If this probability is higher than
+the probability of $t$ falling out of the interval, then we are inclined not to 
+reject the null hypothesis. 
+
+Let's try checking the first part of the test by hand.
+
+```{r, example use of t-test for one sample}
+n <- 100
+dummy <- rnorm(n, mean=8, sd=3)
+dummy_bar <- mean(dummy)
+dummy_sd <- sd(dummy)
+
+# Null hypothesis is mean equality to 7
+t_dummy <- sqrt(n)*(dummy_bar - 7)/dummy_sd
+print(t_dummy)
+qnorm(0.025) < t_dummy && t_dummy < qnorm(0.975) 
+```
+
+We're inclined to reject the null hypothesis. Fortunately there is an R function
+that does that : `t.test`. It even gives back a $p$-value that is useful to 
+cross-validate our guess. Remember it gives probability of achieving as extreme
+as $t$-value we get. If it is higher than the probability of mean being in the 
+5% exterior subset, one is advised not to reject null hypothesis.
+
+```{r, using t.test on dummy}
+t.test(dummy, mu=7)
+```
+
+## Student Two-sample t-test
+
+Consider two sequences of mutually independant random variables having same normal
+law each respectively of mean $\mu_1$ and $\mu_2$ and standard deviations
+$\sigma_1$ and $\sigma_2$. 
+
+* H_0 : $\sigma_1 = \sigma_2$
+* H_1 : $\sigma_1 \neq \sigma_2$
+
+The statistic we compute is the following one (we'll be using indexes to point
+out empirical statistics of first and/or second sequence):
+
+$$ t = \frac{\overline{X}_{1, n} - \overline{X}_{2, n}}{\sqrt{(1/n_1)S_{1, n_1}^2 + (1/n_2)S_{2, n_2}^2}}$$
+
+In general this statistic doesn't follow a student law (unless variances of two
+groups are the same). It can however be approximated by a law which is a student
+one.
+
+```{r, two sample student test}
+t.test(juul_female$igf1, juul_male$igf1)
+```
+
+R output is to be understood as in the previous case. 
+
+**Previous tests have counterparts called Wilcoxon tests. Can you figure out the**
+**difference with the t.tests we've seen here?**
+
+**How would you test variance differences?**
+
+## (Linear) Correlation
+
+
+
+
+
+

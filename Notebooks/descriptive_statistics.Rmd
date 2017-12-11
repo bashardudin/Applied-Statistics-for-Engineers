@@ -332,15 +332,31 @@ seen
 juul_local <- juul_local[!is.na(juul_local$sex), ]
 igf1_sex <- split(juul_local$igf1, juul_local$sex)
 
-statistics_sex <- data.frame(Male=rep(0, 6), Female=rep(0, 6))
-rownames(statistics_sex) <- c("min", "Q1", "median", "mean", "Q3", "max")
+statistics_sex <- data.frame(Male=rep(0, 7), Female=rep(0, 7))
+rownames(statistics_sex) <- c("min", "Q1", "median", "sd", "mean", "Q3", "max")
 for (i in names(igf1_sex)){
   group <- igf1_sex[[i]]
-  statistics_sex[[i]] <- c(min(group), quantile(group, probs=c(0.25)), median(group), 
-                           mean(group), quantile(group, probs=c(0.75)), max(group))
+  statistics_sex[[i]] <- c(min(group), quantile(group, probs=c(0.25)), median(group),
+                           sd(group), mean(group), quantile(group, probs=c(0.75)), max(group))
 }  
 
 statistics_sex
+```
+
+```{r}
+mean_male <- mean(igf1_sex$Male)
+sd_male <- sd(igf1_sex$Male)
+n <- length(igf1_sex$Male)
+c(mean_male - sd_male/(sqrt(n-1))*qt(df=n-1, 0.975),
+  mean_male + sd_male/(sqrt(n-1))*qt(df=n-1, 0.975))
+```
+
+```{r}
+mean_female <- mean(igf1_sex$Female)
+sd_female <- sd(igf1_sex$Female)
+n <- length(igf1_sex$Female)
+c(mean_female - sd_female/(sqrt(n-1))*qt(df=n-1, 0.975),
+  mean_female + sd_female/(sqrt(n-1))*qt(df=n-1, 0.975))
 ```
 
 Looking into these results, one might want to say that females `igf1` feature is
@@ -378,6 +394,9 @@ juul_male$menarche <- NULL
 str(juul_male)
 ```
 
+```{r, scatterplot age against igf1}
+plot(juul_male$age, juul_male$igf1)
+```
 
 ```{r, checking for female dataset}
 str(juul_female)
