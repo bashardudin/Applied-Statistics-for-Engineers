@@ -189,4 +189,7 @@ cor(v, u)
 cor.test(x, y)
 ```
 
+```{r}
+??regression
+```
 
