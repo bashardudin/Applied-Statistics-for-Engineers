@@ -1,0 +1,99 @@
+---
+title: "Exam Applied Statistics for Engineers"
+output: html_notebook
+---
+
+The exam is composed of different case studies where you are expected to show a
+reasonable understanding of notions you've seen during the courses. You'll find 
+easy up to harder questions in each one of the case studies.
+
+## The Iris Dataset 
+
+In case you haven't installed the datasets package on your machine here is a 
+chunck enabling you to do so.
+
+```{r, Installing R datasets package, message=FALSE, echo=FALSE}
+install.packages('datasets')
+```
+
+1. Start by loading the datasets library and the iris dataset.
+
+2. Check types and first rows of your data.
+
+3. Give a quick summary of the iris dataset's statistical measurements.
+
+4. Only keep subset corresponding to last three features.
+
+5. Single out the the subset of the iris dataset corresponding to setosa specie.
+   Be careful to take out colum corresponding to flower type feature.
+
+6. What is the mean of petal length for setosa specie?
+
+7. Compute same mean in the case of the virginica specie?
+
+8. Is the difference in both means significant?
+
+9. Figure out a test that would enable you to single out virginica types from 
+   setosa ones. Justify your answer.
+
+10. Assuming petal lengths of virginica and setosa species are normally 
+    distributed around their empirical means can you compute the probability
+    virginica species would be classified as setosa ones and conversely? 
+    (Using your test.)
+
+## The `cars` dataset from package `datasets`
+
+This is a dataset relating car speed and stopping distance.
+
+```{r, the cars dataset}
+summary(cars)
+```
+
+1. Plot speed against distance.
+
+2. Is there any linear correlation between speed and stopping distance?
+
+3. Can you plot the best linear fit to the previous data?
+
+4. Plot the best linear fit on the scatter plot of given data.
+
+5. Test for quadratic correlations? 
+
+6. Which correlation is more reasonable? Can you figure out a statistical 
+   measurement that would account for that?
+
+
+## The `FARS` Dataset from `gamclass` Package
+
+If you haven't installed the `gamclass` package yet start by running this chunk
+of code.
+
+```{r, install package gamclass, message=FALSE, warning=FALSE}
+install.packages("gamclass")
+```
+
+1. Start loading the `gamclass` package.
+
+2. Drop features corresponding to `caseid`, `airbag`, `restraint`, `inimpact`
+   and `D_*`.
+
+3. Recode `sex`, `state`, `modelyr`, `injury` and `year` features into factors. 
+   Give "M" and "F" names for `sex` feature level.
+
+4. What are the range of years the satistics have been grouped along? What are 
+   the ranges of years' of car model ranging along? Are there any unreasonable 
+   values? What can one replace them by? Do so.
+
+5. Plot barplots of accident numbers per year.
+
+6. What would you need to know whether the difference between earliest year and 
+   latest year accident count is significant?
+   
+7. Is there a significant difference between injury 4 levels of earliest year 
+   and latest one?
+
+8. Plot barplots of injury level proportions for earliest year and latest one. 
+   Are there other significant differences in these proportions?
+   
+9. Recode the categorical feature `injury` into `< 3` and `> 2` levels. Do the 
+   features `airbagDeploy` and `Restraint` affect the recoded injury level? 
